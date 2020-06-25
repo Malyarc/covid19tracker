@@ -14,7 +14,30 @@ class Chart extends React.Component {
 
 
   render () {
-    //console.log(this.props.data);
+
+
+
+    const barChart = (
+      this.props.bar ? (
+        <Bar
+          data={{
+            labels: ['Infected', 'Recovered', 'Deaths'],
+            datasets: [
+              {
+                label: 'People',
+                backgroundColor: ['rgba(0, 0, 255, 0.5)', 'rgba(0, 255, 0, 0.5)', 'rgba(255, 0, 0, 0.5)'],
+                data: [this.props.countryData.confirmed, this.props.countryData.recovered, this.props.countryData.deaths],
+              },
+            ],
+          }}
+          options={{
+            legend: { display: false },
+            title: { display: true, text: `Current state in ${this.props.countryName}` },
+          }}
+        />
+      ) : null
+    );
+
 
     const lineChart = (
 
@@ -43,7 +66,7 @@ class Chart extends React.Component {
 
     return (
       <div className={styles.container}>
-        {lineChart}
+        {this.props.bar ? barChart : lineChart}
       </div>
     )
   }

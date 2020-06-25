@@ -16,8 +16,12 @@ class App extends React.Component {
       this.state = {
         data: [],
         daily: [],
-        countries: []
+        countries: [],
+        country: '',
+        countryData: {},
+        selected: false
       }
+      this.handleCountryChange = this.handleCountryChange.bind(this);
     }
 
 
@@ -62,7 +66,7 @@ class App extends React.Component {
       }).done((data) => {
           var storage = [];
           for (var i = 0; i < data.countries.length; i++) {
-            console.log(data.countries[i].name)
+            //console.log(data.countries[i].name)
             storage.push(data.countries[i].name)
           }
           this.setState({
@@ -75,6 +79,42 @@ class App extends React.Component {
       );
     }
 
+    handleCountryChange (newcountry) {
+      if (newcountry === 'global') {
+        this.setState({
+          country: '',
+          selected: false
+        })
+      } else {
+        console.log(newcountry);
+        this.setState({
+          country: newcountry,
+          selected: true
+        })
+        this.covidCountrySelectedData(newcountry);
+      }
+
+
+    }
+
+    covidCountrySelectedData (country) {
+      $.ajax({
+        method: 'GET',
+        url: `https://covid19.mathdro.id/api/countries/${country}`
+      }).done((data) => {
+
+          this.setState({
+            countryData: {
+              confirmed: data.confirmed.value,
+              recovered: data.recovered.value,
+              deaths: data.deaths.value
+            }
+          })
+          console.log(this.state.countryData)
+        }
+      );
+    }
+
 
     render () {
 
@@ -82,8 +122,8 @@ class App extends React.Component {
       return (
       <div className= {styles.container}>
         <Cards confirmed={this.state.data.confirmed} recovered={this.state.data.recovered} deaths={this.state.data.deaths} lastUpdated={this.state.data.lastUpdate}/>
-        <CountryPicker data={this.state.countries}/>
-        <Chart data={this.state.daily}/>
+        <CountryPicker data={this.state.countries} handleCountryChange={this.handleCountryChange}/>
+        <Chart data={this.state.daily} bar={this.state.selected} countryData = {this.state.countryData} countryName= {this.state.country}/>
       </div>
       )
     }
