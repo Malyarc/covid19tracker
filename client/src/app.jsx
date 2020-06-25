@@ -14,17 +14,18 @@ class App extends React.Component {
     constructor(props) {
       super(props);
       this.state = {
-        confirmed : 0,
-        recovered: 0,
-        deaths: 0,
-        lastUpdated: 0,
-        data: []
+        data: [],
+        daily: [],
+        countries: []
       }
     }
 
 
     componentDidMount() {
       this.covidData();
+      this.covidDailyData();
+      this.covidCountriesData();
+
     }
 
     covidData () {
@@ -33,10 +34,6 @@ class App extends React.Component {
         url: 'https://covid19.mathdro.id/api'
       }).done((data) => {
           this.setState({
-            confirmed: data.confirmed,
-            recovered: data.recovered,
-            deaths: data.deaths,
-            lastUpdated: data.lastUpdate,
             data: data
           })
 
@@ -44,14 +41,49 @@ class App extends React.Component {
       );
     }
 
+    covidDailyData () {
+      $.ajax({
+        method: 'GET',
+        url: 'https://covid19.mathdro.id/api/daily'
+      }).done((data) => {
+          this.setState({
+            daily: data
+          })
+
+
+        }
+      );
+    }
+
+    covidCountriesData () {
+      $.ajax({
+        method: 'GET',
+        url: 'https://covid19.mathdro.id/api/countries'
+      }).done((data) => {
+          var storage = [];
+          for (var i = 0; i < data.countries.length; i++) {
+            console.log(data.countries[i].name)
+            storage.push(data.countries[i].name)
+          }
+          this.setState({
+            countries: storage
+          })
+          //console.log(this.state.countries)
+
+
+        }
+      );
+    }
+
+
     render () {
 
 
       return (
       <div className= {styles.container}>
-        <Cards confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} lastUpdated={this.state.lastUpdated}/>
-        <CountryPicker />
-        <Chart />
+        <Cards confirmed={this.state.data.confirmed} recovered={this.state.data.recovered} deaths={this.state.data.deaths} lastUpdated={this.state.data.lastUpdate}/>
+        <CountryPicker data={this.state.countries}/>
+        <Chart data={this.state.daily}/>
       </div>
       )
     }
