@@ -48,7 +48,7 @@ class App extends React.Component {
 
 
       return (
-      <div class= 'container'>
+      <div className= {styles.container}>
         <Cards confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} lastUpdated={this.state.lastUpdated}/>
         <CountryPicker />
         <Chart />
