@@ -17,7 +17,8 @@ class App extends React.Component {
         confirmed : 0,
         recovered: 0,
         deaths: 0,
-        lastUpdated: 0
+        lastUpdated: 0,
+        data: []
       }
     }
 
@@ -35,9 +36,10 @@ class App extends React.Component {
             confirmed: data.confirmed,
             recovered: data.recovered,
             deaths: data.deaths,
-            lastUpdated: data.lastUpdated
+            lastUpdated: data.lastUpdate,
+            data: data
           })
-          console.log(this.state.confirmed)
+
         }
       );
     }
@@ -47,7 +49,7 @@ class App extends React.Component {
 
       return (
       <div class= 'container'>
-        <Cards />
+        <Cards confirmed={this.state.confirmed} recovered={this.state.recovered} deaths={this.state.deaths} lastUpdated={this.state.lastUpdated}/>
         <CountryPicker />
         <Chart />
       </div>
